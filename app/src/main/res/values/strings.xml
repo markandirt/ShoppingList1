@@ -3,4 +3,5 @@
     <string name="confirm">Confirmation</string>
     <string name="confirm_message">Confirmation</string>
     <string name="remove">Remove</string>
+    <string name="confirm_mesage">Are you sure you want to remove \'%s\'?</string>
 </resources>
