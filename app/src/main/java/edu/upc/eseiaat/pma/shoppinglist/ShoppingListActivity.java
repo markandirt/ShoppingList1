@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class ShoppingListActivity extends AppCompatActivity {
 
     private ArrayList<String> itemList;
-    private ArrayAdapter<String> adapter;
+    private ShoppingListAdapter adapter;
 
 
 
@@ -41,7 +41,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         itemList.add("Zanahorias");
         itemList.add("Copas Danone");
 
-        adapter=new ArrayAdapter<String>(
+        adapter=new ShoppingListAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
                 itemList
