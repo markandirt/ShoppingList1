@@ -36,8 +36,8 @@ public class ShoppingListActivity extends AppCompatActivity {
         edit_item = (EditText) findViewById(R.id.edit_item);
 
         itemList= new ArrayList<>();
-        itemList.add(new ShoppingItem("Patatas"));
-        itemList.add(new ShoppingItem("Papel WC"));
+        itemList.add(new ShoppingItem("Patatas", true));
+        itemList.add(new ShoppingItem("Papel WC", true));
         itemList.add(new ShoppingItem("Zanahorias"));
         itemList.add(new ShoppingItem("Copas Danone"));
 
@@ -56,6 +56,15 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         list.setAdapter(adapter);
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+                itemList.get(pos).toggleChecked();
+                adapter.notifyDataSetChanged();
+
+            }
+        });
+
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> list, View item, int pos, long id) {
@@ -69,10 +78,12 @@ public class ShoppingListActivity extends AppCompatActivity {
     private void addItem() {
         String item_text = edit_item.getText().toString();
         if (!item_text.isEmpty()) {
-            itemList.add(item_text);
+            itemList.add(new ShoppingItem(item_text));
             adapter.notifyDataSetChanged();
             edit_item.setText("");
         }
+
+        list.smoothScrollToPosition(itemList.size()-1);
     }
 
     private void maybeRemoveItem(final int pos) {
