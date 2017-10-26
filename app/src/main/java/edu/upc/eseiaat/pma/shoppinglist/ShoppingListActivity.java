@@ -90,7 +90,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm);
         String fmt = getResources().getString(R.string.confirm_mesage);
-        builder.setMessage(String.format(fmt,itemList.get(pos)));
+        builder.setMessage(String.format(fmt,itemList.get(pos).getText()));
         builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
