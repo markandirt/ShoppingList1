@@ -8,4 +8,6 @@
     <string name="cannot_read">Couldn\'t read list</string>
     <string name="clear_checked" />
     <string name="clear_check">Clear checked items</string>
+    <string name="clear_all">Clear all</string>
+    <string name="confirm_clear_all">Are you sure you want to clear all items?</string>
 </resources>
