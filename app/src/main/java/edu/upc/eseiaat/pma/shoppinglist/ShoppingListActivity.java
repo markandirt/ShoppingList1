@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 public class ShoppingListActivity extends AppCompatActivity {
 
     private static final String FILENAME = "shopping_list.txt";
+    private static final int MAX_BYTES = 8000;
 
     private ArrayList<ShoppingItem> itemList;
     private ShoppingListAdapter adapter;
@@ -46,10 +50,10 @@ public class ShoppingListActivity extends AppCompatActivity {
             fos.close();
 
         } catch (FileNotFoundException e) {
-            Log.e("markandirt", "writeItemist: FileNotFoundException");
+            Log.e("markandirt", "writeItemList: FileNotFoundException");
             Toast.makeText(this, R.string.cannot_write, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Log.e("markandirt", "writeItemist: FileNotFoundException");
+            Log.e("markandirt", "writeItemList: IOException");
             Toast.makeText(this, R.string.cannot_write, Toast.LENGTH_SHORT).show();
         }
     }
@@ -58,8 +62,21 @@ public class ShoppingListActivity extends AppCompatActivity {
         itemList = new ArrayList<>();
         try {
             FileInputStream fis = openFileInput(FILENAME);
-        } catch (FileNotFoundException e) {
+            byte[] buffer = new byte[MAX_BYTES];
+            int nread = fis.read(buffer);
+            String content = new String(buffer,0, nread);
+            String[] lines = content.split("\n");
+            for (String line : lines) {
+                String[] parts = line.split(";");
+                itemList.add(new ShoppingItem(parts[0], parts[1].equals("true")));
+            }
+            fis.close();
 
+        } catch (FileNotFoundException e) {
+            Log.i("markandirt", "readItemList: FileNotFoundException");
+        } catch (IOException e) {
+            Log.e("markandirt", "readItemList: IOException");
+            Toast.makeText(this, R.string.cannot_read, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -79,11 +96,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         btn_add = (Button) findViewById(R.id.btn_add);
         edit_item = (EditText) findViewById(R.id.edit_item);
 
-        itemList= new ArrayList<>();
-        itemList.add(new ShoppingItem("Patatas", true));
-        itemList.add(new ShoppingItem("Papel WC", true));
-        itemList.add(new ShoppingItem("Zanahorias"));
-        itemList.add(new ShoppingItem("Copas Danone"));
+        readItemList();
 
         adapter=new ShoppingListAdapter(
                 this,
@@ -153,6 +166,38 @@ public class ShoppingListActivity extends AppCompatActivity {
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.create().show();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.clear_checked:
+                clearChecked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void clearChecked() {
+        int i =0;
+        while( i < itemList.size()) {
+            if (itemList.get(i).isChecked()){
+                itemList.remove(i);
+            } else{
+                i++;
+            }
+
+        }
+        adapter.notifyDataSetChanged();
     }
 
 }
